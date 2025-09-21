@@ -1,0 +1,101 @@
+
+.Container{
+    display: flex;
+    height: 90vh;
+}
+
+
+.Bottom-Nav {
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-family: Arial;
+
+}
+
+.Bottom-Nav a:link,
+.Bottom-Nav a:visited,
+.Bottom-Nav a:hover,
+.Bottom-Nav a:active {
+    color: inherit;
+    text-decoration: none;
+    display: inline-block;      
+}
+
+/* Left and Right Section Styles*/
+.Left{
+    padding: 20px;
+    width: 60%;
+    height: 50vh;
+}
+
+.Left h1{
+    font-family: Arial;
+    font-weight: bold;
+    font-size: 50px;
+    margin-left: 100px;
+}
+
+.Right{
+    padding: 20px;
+    width: 20vh;
+    border: 1px solid black;
+    flex: 1;
+    display: flex;
+    background-image: url("../assets/images/Alliance\ Login\ BG.png");
+    background-size: cover;
+    top: 120px;
+    height: 80vh;
+    width: 50px;
+    
+}
+
+
+
+
+
+/* Form Styles*/
+
+form{
+    font-family: Arial;
+    background-color: whitesmoke;
+    padding: 20px;
+    border: 1px solid black;
+    margin-top: 50px;
+    margin-left: 100px;
+    width: 700px;
+    border-radius: 5px;
+    border-color: red;
+    font-size: 20px;
+    height: 380px;
+}
+
+form label{
+    font-family: Arial;
+    margin-bottom: 30px;
+}
+form input{
+    padding: 5px;
+    margin-top:10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    width: 685px;
+    height: 45px;
+    
+}
+
+input[type=submit]{
+    background-color: rgb(93, 91, 225);
+    color: white;
+    border: 2px solid black;
+    padding: 8px 16px;
+    text-decoration: none;
+    margin: 4px 2px;
+    width: 695px;
+    height: 50px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+}

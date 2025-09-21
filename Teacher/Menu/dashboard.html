@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    
+    <meta charset="UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Styles/dashboard.css">
+    <title>Dashboard</title>
+    <script src="../Scripts/main.js"></script>
+</head>
+<body>
+    <div class="Container">
+        <div class="Top-Bar">
+            <div class="merge-sideMenu-search">
+            <button class="hamburger" onclick="toggleMenu()">
+                ☰
+            </button>
+            <form action="/search" method="get">
+            <input type="text" name="query" placeholder="...">    
+            <button class="search-icon" type="Submit">&#128269;</button>
+            </form>
+            </div>
+            <button >&#9881;</button>
+        </div>
+        <div id="overlay" class="overlay" onclick="closeMenu()"></div>
+        <nav id="sideMenu" class="side-menu">
+                <a class="profile-image"></a>
+                <a href="">Dashboard</a>
+                <a href="">Subjects</a>
+                <a href="">Settings</a>
+                <a href="">Help</a>
+                <a href="../login.html" class="back-button">&#8592;</a>
+            </nav>
+        <h1 class="dashboard">Dashboard</h1>
+    </div>
+</body>
+</html>
