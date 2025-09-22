@@ -17,7 +17,7 @@ function side_menubar(targetId){
         <div id="overlay" class="overlay" onclick="closeMenu()"></div>
         <nav id="sideMenu" class="side-menu">
                 <a class="profile-image"></a>
-                <a href="">Dashboard</a>
+                <a href="../Menu/dashboard.html">Dashboard</a>
                 <a href="subjects.html">Subjects</a>
                 <a href="">Settings</a>
                 <a href="">Help</a>
