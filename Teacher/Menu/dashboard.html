@@ -9,30 +9,14 @@
     <link rel="stylesheet" href="Styles/dashboard.css">
     <title>Dashboard</title>
     <script src="../Scripts/main.js"></script>
+    <script src="shared_components/side_menu.js"></script>
 </head>
 <body>
     <div class="Container">
-        <div class="Top-Bar">
-            <div class="merge-sideMenu-search">
-            <button class="hamburger" onclick="toggleMenu()">
-                ☰
-            </button>
-            <form action="/search" method="get">
-            <input type="text" name="query" placeholder="...">    
-            <button class="search-icon" type="Submit">&#128269;</button>
-            </form>
-            </div>
-            <button >&#9881;</button>
-        </div>
-        <div id="overlay" class="overlay" onclick="closeMenu()"></div>
-        <nav id="sideMenu" class="side-menu">
-                <a class="profile-image"></a>
-                <a href="">Dashboard</a>
-                <a href="">Subjects</a>
-                <a href="">Settings</a>
-                <a href="">Help</a>
-                <a href="../login.html" class="back-button">&#8592;</a>
-            </nav>
+        <div id="sidebar"></div>
+        <script>
+            side_menubar("sidebar");
+        </script>
         <h1 class="dashboard">Dashboard</h1>
 
 
