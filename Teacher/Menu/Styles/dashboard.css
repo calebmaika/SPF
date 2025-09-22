@@ -121,6 +121,8 @@ form input[type="text"]{
     left:0;
 }
 
+
+
 .overlay{
     position:fixed;
     top:0;
@@ -129,4 +131,59 @@ form input[type="text"]{
     height: 100%;
     display:none;
     z-index: 5;
+}
+
+/*Contents*/
+
+.recent-text, .summary-text, .Summary{
+    font-family: Arial;
+}
+
+.recent-text{
+    margin-left: 10%;
+}
+
+.recent-card{
+    height: 250px;
+    width: 250px;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin-left: 10%;
+}
+
+.summary-text{
+    margin-left: 10%;
+}
+
+.Summary{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-left: 10%;
+    margin-right: 10%;
+    gap: 20px;
+}
+
+.summary-item{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.summary-item h3{
+    margin-bottom: 10px;
+    font-family: Arial;
+    font-size: 18px;
+    margin-top: 0;
+}
+
+.students-card, .subjects-card, .activities-card{
+    height: 100px;
+    width: 100px;
+    border: 1px solid black;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

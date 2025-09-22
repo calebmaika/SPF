@@ -15,3 +15,22 @@ function closeMenu(){
     document.getElementById("overlay").style.display="none";
 }
 
+
+function getRecent(){
+
+}
+
+function getSummary(){
+
+}
+
+function total_Students(total_students){
+    
+    
+}
+function total_Subjects(){
+
+}
+function total_Activities(){
+
+}
