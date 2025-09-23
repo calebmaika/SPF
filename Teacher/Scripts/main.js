@@ -15,7 +15,7 @@ function closeMenu(){
     document.getElementById("overlay").style.display="none";
 }
 
-
+//Dashboard functions
 function getRecent(){
 
 }
@@ -33,4 +33,10 @@ function total_Subjects(){
 }
 function total_Activities(){
 
+}
+
+//Grades Functions
+
+function get_students(){
+    
 }
