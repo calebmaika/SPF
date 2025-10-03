@@ -1,0 +1,654 @@
+@{
+    ViewData["Title"] = "Grades";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Grades Section - Categories & Dates</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+  h2 { margin-bottom: 10px; color:#2c3e50; }
+
+  .category-toggle { display: none; }
+
+  .categories { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap:wrap; }
+  .categories label, .categories button {
+    padding: 10px 18px; background:#ddd; border-radius:6px; cursor:pointer;
+    user-select:none; transition: background .2s; border:none;
+  }
+  .categories button { font-weight:bold; }
+
+  #activities:checked ~ .wrap .categories label[for="activities"],
+  #quizzes:checked ~ .wrap .categories label[for="quizzes"],
+  #exams:checked ~ .wrap .categories label[for="exams"] {
+    background:#4CAF50; color:white;
+  }
+
+  .add-category { background:#2196F3; color:white; }
+  .view-date { background:#FF5722; color:white; }
+
+  .category-content, .by-date { display:none; background:#fff; padding:12px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.08); overflow:auto; }
+
+  #activities:checked ~ .wrap .activities-content { display:block; }
+  #quizzes:checked ~ .wrap .quizzes-content     { display:block; }
+  #exams:checked ~ .wrap .exams-content         { display:block; }
+
+  table { width:100%; border-collapse:collapse; margin-top:8px; font-size:14px; min-width:700px; }
+  th, td { border:1px solid #e0e0e0; padding:8px 10px; text-align:center; vertical-align:top; }
+  th { background:#f5f7fa; color:#333; }
+  tbody tr:hover { background:#fbfdff; }
+
+  .date-label { display:block; font-size:12px; color:#666; margin-top:3px; font-weight:normal; }
+  .edit-btn { background:#FF9800; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; margin-right:5px; }
+  .save-btn { background:#4CAF50; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; margin-right:5px; }
+  .cancel-btn { background:#f44336; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; }
+  .add-entry-header-btn { background:#2196F3; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer; margin-left:15px; font-size:14px; }
+  
+  .category-header { display:flex; align-items:center; margin-bottom:10px; }
+  
+  .editable-cell { background:#fff3cd; border:2px solid #ffc107; }
+  .editable-input { width:60px; padding:4px; border:1px solid #ccc; border-radius:3px; text-align:center; }
+
+  /* View by Date */
+  .date-group { margin-bottom: 20px; padding: 12px; border: 1px solid #e0e0e0; border-radius: 6px; background: #fafafa; }
+  .date-group h3 { margin-top: 0; color:#2c3e50; }
+  .date-item { margin-left: 15px; padding: 4px 0; }
+</style>
+</head>
+<body>
+
+  <input class="category-toggle" type="radio" id="activities" name="category" checked>
+  <input class="category-toggle" type="radio" id="quizzes" name="category">
+  <input class="category-toggle" type="radio" id="exams" name="category">
+
+  <div class="wrap">
+
+    <div class="categories">
+      <label for="activities">Activities</label>
+      <label for="quizzes">Quizzes</label>
+      <label for="exams">Exams</label>
+      <button class="add-category">+</button>
+      <button class="view-date" onclick="toggleDateView()">View by Date</button>
+    </div>
+
+    <!-- Activities -->
+    <div class="category-content activities-content">
+      <div class="category-header">
+        <h2>Activities</h2>
+        <button class="add-entry-header-btn" onclick="addNewEntry('activities')">Add Entry</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Student</th>
+            <th>Activity 1 <span class="date-label">2025-09-01</span></th>
+            <th>Activity 2 <span class="date-label">2025-09-05</span></th>
+            <th>Total</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2023-001</td><td>Alice Johnson</td>
+            <td>18/20</td><td>19/20</td><td>37/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-002</td><td>Bob Smith</td>
+            <td>16/20</td><td>15/20</td><td>31/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-003</td><td>Charlie Brown</td>
+            <td>20/20</td><td>18/20</td><td>38/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-004</td><td>Diana Prince</td>
+            <td>17/20</td><td>20/20</td><td>37/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-005</td><td>Edward Wilson</td>
+            <td>15/20</td><td>16/20</td><td>31/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-006</td><td>Fiona Davis</td>
+            <td>19/20</td><td>17/20</td><td>36/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-007</td><td>George Martinez</td>
+            <td>14/20</td><td>18/20</td><td>32/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-008</td><td>Helen Garcia</td>
+            <td>20/20</td><td>20/20</td><td>40/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-009</td><td>Ivan Rodriguez</td>
+            <td>16/20</td><td>17/20</td><td>33/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-010</td><td>Julia Thompson</td>
+            <td>18/20</td><td>19/20</td><td>37/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-011</td><td>Kevin Lee</td>
+            <td>13/20</td><td>14/20</td><td>27/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-012</td><td>Lisa Anderson</td>
+            <td>19/20</td><td>18/20</td><td>37/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-013</td><td>Michael Chen</td>
+            <td>17/20</td><td>19/20</td><td>36/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-014</td><td>Nancy White</td>
+            <td>20/20</td><td>17/20</td><td>37/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-015</td><td>Oscar Taylor</td>
+            <td>15/20</td><td>16/20</td><td>31/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-016</td><td>Paula Miller</td>
+            <td>18/20</td><td>20/20</td><td>38/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-017</td><td>Quinn Jackson</td>
+            <td>16/20</td><td>15/20</td><td>31/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-018</td><td>Rachel Moore</td>
+            <td>19/20</td><td>19/20</td><td>38/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-019</td><td>Steven Clark</td>
+            <td>14/20</td><td>17/20</td><td>31/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-020</td><td>Tina Lewis</td>
+            <td>20/20</td><td>18/20</td><td>38/40</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Quizzes -->
+    <!-- Quizzes -->
+    <div class="category-content quizzes-content">
+      <div class="category-header">
+        <h2>Quizzes</h2>
+        <button class="add-entry-header-btn" onclick="addNewEntry('quizzes')">Add Entry</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Student</th>
+            <th>Quiz 1 <span class="date-label">2025-09-03</span></th>
+            <th>Quiz 2 <span class="date-label">2025-09-10</span></th>
+            <th>Total</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2023-001</td><td>Alice Johnson</td>
+            <td>45/50</td><td>48/50</td><td>93/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-002</td><td>Bob Smith</td>
+            <td>40/50</td><td>42/50</td><td>82/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-003</td><td>Charlie Brown</td>
+            <td>48/50</td><td>46/50</td><td>94/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-004</td><td>Diana Prince</td>
+            <td>47/50</td><td>49/50</td><td>96/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-005</td><td>Edward Wilson</td>
+            <td>38/50</td><td>41/50</td><td>79/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-006</td><td>Fiona Davis</td>
+            <td>44/50</td><td>43/50</td><td>87/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-007</td><td>George Martinez</td>
+            <td>39/50</td><td>45/50</td><td>84/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-008</td><td>Helen Garcia</td>
+            <td>50/50</td><td>49/50</td><td>99/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-009</td><td>Ivan Rodriguez</td>
+            <td>42/50</td><td>44/50</td><td>86/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-010</td><td>Julia Thompson</td>
+            <td>46/50</td><td>47/50</td><td>93/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-011</td><td>Kevin Lee</td>
+            <td>35/50</td><td>37/50</td><td>72/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-012</td><td>Lisa Anderson</td>
+            <td>48/50</td><td>45/50</td><td>93/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-013</td><td>Michael Chen</td>
+            <td>43/50</td><td>47/50</td><td>90/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-014</td><td>Nancy White</td>
+            <td>49/50</td><td>44/50</td><td>93/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-015</td><td>Oscar Taylor</td>
+            <td>41/50</td><td>40/50</td><td>81/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-016</td><td>Paula Miller</td>
+            <td>45/50</td><td>48/50</td><td>93/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-017</td><td>Quinn Jackson</td>
+            <td>40/50</td><td>39/50</td><td>79/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-018</td><td>Rachel Moore</td>
+            <td>47/50</td><td>46/50</td><td>93/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-019</td><td>Steven Clark</td>
+            <td>38/50</td><td>43/50</td><td>81/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-020</td><td>Tina Lewis</td>
+            <td>49/50</td><td>45/50</td><td>94/100</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Exams -->
+    <!-- Exams -->
+    <div class="category-content exams-content">
+      <div class="category-header">
+        <h2>Exams</h2>
+        <button class="add-entry-header-btn" onclick="addNewEntry('exams')">Add Entry</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Student</th>
+            <th>Midterm <span class="date-label">2025-09-15</span></th>
+            <th>Final <span class="date-label">2025-09-19</span></th>
+            <th>Total</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2023-001</td><td>Alice Johnson</td>
+            <td>90/100</td><td>92/100</td><td>182/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-002</td><td>Bob Smith</td>
+            <td>78/100</td><td>85/100</td><td>163/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-003</td><td>Charlie Brown</td>
+            <td>95/100</td><td>88/100</td><td>183/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-004</td><td>Diana Prince</td>
+            <td>87/100</td><td>96/100</td><td>183/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-005</td><td>Edward Wilson</td>
+            <td>75/100</td><td>82/100</td><td>157/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-006</td><td>Fiona Davis</td>
+            <td>89/100</td><td>84/100</td><td>173/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-007</td><td>George Martinez</td>
+            <td>72/100</td><td>89/100</td><td>161/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-008</td><td>Helen Garcia</td>
+            <td>98/100</td><td>97/100</td><td>195/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-009</td><td>Ivan Rodriguez</td>
+            <td>81/100</td><td>86/100</td><td>167/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-010</td><td>Julia Thompson</td>
+            <td>88/100</td><td>91/100</td><td>179/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-011</td><td>Kevin Lee</td>
+            <td>69/100</td><td>74/100</td><td>143/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-012</td><td>Lisa Anderson</td>
+            <td>93/100</td><td>87/100</td><td>180/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-013</td><td>Michael Chen</td>
+            <td>85/100</td><td>93/100</td><td>178/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-014</td><td>Nancy White</td>
+            <td>96/100</td><td>86/100</td><td>182/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-015</td><td>Oscar Taylor</td>
+            <td>76/100</td><td>79/100</td><td>155/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-016</td><td>Paula Miller</td>
+            <td>86/100</td><td>95/100</td><td>181/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-017</td><td>Quinn Jackson</td>
+            <td>79/100</td><td>77/100</td><td>156/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-018</td><td>Rachel Moore</td>
+            <td>91/100</td><td>89/100</td><td>180/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-019</td><td>Steven Clark</td>
+            <td>73/100</td><td>84/100</td><td>157/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+          <tr>
+            <td>2023-020</td><td>Tina Lewis</td>
+            <td>94/100</td><td>88/100</td><td>182/200</td>
+            <td><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- View by Date -->
+    <div id="date-view" class="by-date">
+      <h2>By Date</h2>
+      <div class="date-group">
+        <h3>2025-09-01</h3>
+        <div class="date-item">Activity 1</div>
+      </div>
+      <div class="date-group">
+        <h3>2025-09-03</h3>
+        <div class="date-item">Quiz 1</div>
+      </div>
+      <div class="date-group">
+        <h3>2025-09-05</h3>
+        <div class="date-item">Activity 2</div>
+      </div>
+      <div class="date-group">
+        <h3>2025-09-10</h3>
+        <div class="date-item">Quiz 2</div>
+      </div>
+      <div class="date-group">
+        <h3>2025-09-15</h3>
+        <div class="date-item">Midterm Exam</div>
+      </div>
+      <div class="date-group">
+        <h3>2025-09-19</h3>
+        <div class="date-item">Final Exam</div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  function addNewEntry(category) {
+    let table, newColumnName, maxScore, dateStr;
+    
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date();
+    dateStr = today.toISOString().split('T')[0];
+    
+    if (category === 'activities') {
+      table = document.querySelector('.activities-content table');
+      const activityCount = table.querySelectorAll('thead th').length - 3; // Subtract ID, Student, Total, Action columns
+      newColumnName = `Activity ${activityCount}`;
+      maxScore = 20;
+    } else if (category === 'quizzes') {
+      table = document.querySelector('.quizzes-content table');
+      const quizCount = table.querySelectorAll('thead th').length - 3;
+      newColumnName = `Quiz ${quizCount}`;
+      maxScore = 50;
+    } else if (category === 'exams') {
+      table = document.querySelector('.exams-content table');
+      const examCount = table.querySelectorAll('thead th').length - 3;
+      newColumnName = `Exam ${examCount}`;
+      maxScore = 100;
+    }
+    
+    // Add new header column (before Total column)
+    const headerRow = table.querySelector('thead tr');
+    const totalHeader = headerRow.querySelector('th:nth-last-child(2)'); // Total column
+    
+    const newHeader = document.createElement('th');
+    newHeader.innerHTML = `${newColumnName} <span class="date-label">${dateStr}</span>`;
+    headerRow.insertBefore(newHeader, totalHeader);
+    
+    // Add new data columns to all rows
+    const bodyRows = table.querySelectorAll('tbody tr');
+    bodyRows.forEach(row => {
+      const totalCell = row.querySelector('td:nth-last-child(2)');
+      const newCell = document.createElement('td');
+      newCell.textContent = `0/${maxScore}`;
+      row.insertBefore(newCell, totalCell);
+    });
+    
+    // Recalculate all totals
+    recalculateTotals(table);
+  }
+  
+  function recalculateTotals(table) {
+    const bodyRows = table.querySelectorAll('tbody tr');
+    
+    bodyRows.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      let total = 0;
+      let maxTotal = 0;
+      
+      // Skip ID, Student columns and last 2 columns (Total, Action)
+      for (let i = 2; i < cells.length - 2; i++) {
+        const cellText = cells[i].textContent;
+        const parts = cellText.split('/');
+        
+        if (parts.length === 2) {
+          const score = parseInt(parts[0]) || 0;
+          const max = parseInt(parts[1]) || 0;
+          total += score;
+          maxTotal += max;
+        }
+      }
+      
+      // Update total cell
+      const totalCell = cells[cells.length - 2];
+      totalCell.textContent = `${total}/${maxTotal}`;
+    });
+  }
+
+  function toggleDateView() {
+    const dateView = document.getElementById("date-view");
+    const categories = document.querySelectorAll(".category-content");
+    if (dateView.style.display === "block") {
+      dateView.style.display = "none";
+      categories.forEach(c => c.style.display = "");
+    } else {
+      dateView.style.display = "block";
+      categories.forEach(c => c.style.display = "none");
+    }
+  }
+
+  function editRow(button) {
+    const row = button.closest('tr');
+    const isEditing = button.textContent === 'Save';
+    
+    if (isEditing) {
+      // Save mode - collect all input values and update cells
+      const inputs = row.querySelectorAll('.editable-input');
+      let total = 0;
+      let maxTotal = 0;
+      
+      inputs.forEach((input, index) => {
+        const cell = input.parentElement;
+        const value = input.value;
+        
+        // Parse the score (e.g., "18/20" -> score=18, max=20)
+        const parts = value.split('/');
+        if (parts.length === 2) {
+          const score = parseInt(parts[0]) || 0;
+          const max = parseInt(parts[1]) || 0;
+          total += score;
+          maxTotal += max;
+        }
+        
+        cell.innerHTML = value;
+        cell.classList.remove('editable-cell');
+      });
+      
+      // Update total column (second to last cell)
+      const cells = row.querySelectorAll('td');
+      const totalCell = cells[cells.length - 2];
+      totalCell.textContent = total + '/' + maxTotal;
+      
+      // Reset button
+      button.textContent = 'Edit';
+      button.className = 'edit-btn';
+      button.onclick = () => editRow(button);
+      
+      // Remove cancel button if it exists
+      const cancelBtn = row.querySelector('.cancel-btn');
+      if (cancelBtn) {
+        cancelBtn.remove();
+      }
+      
+    } else {
+      // Edit mode - make score cells editable
+      const cells = row.querySelectorAll('td');
+      
+      // Make score cells editable (skip ID, Name, Total, and Action columns)
+      for (let i = 2; i < cells.length - 2; i++) {
+        const cell = cells[i];
+        const currentValue = cell.textContent;
+        
+        cell.innerHTML = `<input type="text" class="editable-input" value="${currentValue}">`;
+        cell.classList.add('editable-cell');
+      }
+      
+      // Change button to Save
+      button.textContent = 'Save';
+      button.className = 'save-btn';
+      
+      // Add cancel button
+      const cancelBtn = document.createElement('button');
+      cancelBtn.textContent = 'Cancel';
+      cancelBtn.className = 'cancel-btn';
+      cancelBtn.onclick = () => cancelEdit(row, button);
+      
+      button.parentElement.appendChild(cancelBtn);
+    }
+  }
+  
+  function cancelEdit(row, editButton) {
+    // Remove all input fields and restore original values
+    const editableCells = row.querySelectorAll('.editable-cell');
+    editableCells.forEach(cell => {
+      const input = cell.querySelector('.editable-input');
+      const originalValue = input.value;
+      cell.innerHTML = originalValue;
+      cell.classList.remove('editable-cell');
+    });
+    
+    // Reset edit button
+    editButton.textContent = 'Edit';
+    editButton.className = 'edit-btn';
+    editButton.onclick = () => editRow(editButton);
+    
+    // Remove cancel button
+    const cancelBtn = row.querySelector('.cancel-btn');
+    if (cancelBtn) {
+      cancelBtn.remove();
+    }
+  }
+</script>
+
+</body>
+</html>
