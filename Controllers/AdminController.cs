@@ -33,21 +33,30 @@ namespace Alliance_Group_5_Project_Student_Performance_Tracker.Controllers
 
         // POST: Add Teacher
         [HttpPost]
-        [HttpPost]
-    public IActionResult AddTeacher(TeacherViewModel vm)
-    {
-        if (ModelState.IsValid && vm.NewTeacher != null)
+        public IActionResult AddTeacher(TeacherViewModel vm)
         {
-            _context.Teachers.Add(vm.NewTeacher);
-            _context.SaveChanges();
-            return RedirectToAction("Teachers");
+            if (ModelState.IsValid && vm.NewTeacher != null)
+            {
+                _context.Teachers.Add(vm.NewTeacher);
+                _context.SaveChanges();
+                return RedirectToAction("Teachers");
+            }
+
+            // if invalid, reload page with existing teachers
+            vm.Teachers = _context.Teachers.ToList();
+            return View("Teachers", vm);
         }
 
-        // if invalid, reload page with existing teachers
-        vm.Teachers = _context.Teachers.ToList();
-        return View("Teachers", vm);
-    }
-
+        // GET: Edit Teacher (for modal)
+        public IActionResult GetTeacher(int id)
+        {
+            var teacher = _context.Teachers.Find(id);
+            if (teacher == null)
+            {
+                return NotFound();
+            }
+            return Json(teacher);
+        }
 
         // POST: Edit Teacher
         [HttpPost]
