@@ -21,7 +21,7 @@ namespace Alliance_Group_5_Project_Student_Performance_Tracker.Models
         [Range(18, 100)]
         public int Age { get; set; }
 
-        [Required, StringLength(100)]
-        public string Subject { get; set; } = string.Empty;
+        //[Required, StringLength(100)]
+        public Subject Subject { get; set; } 
     }
 }

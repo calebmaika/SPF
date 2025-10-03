@@ -91,7 +91,13 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Subject</label>
-                        <input asp-for="NewTeacher.Subject" class="form-control" required />
+                        <select asp-for="NewTeacher.Subject" class="form-select" required>
+                            <option value="">Select Subject</option>
+                            <option value="English">English</option>
+                            <option value="Math">Math</option>
+                            <option value="Science">Science</option>
+                            <option value="PE">PE</option>
+                        </select>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Save</button>
                 </form>
@@ -133,7 +139,13 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Subject</label>
-                        <input id="editSubject" name="Subject" class="form-control" required />
+                        <select asp-for="NewTeacher.Subject" class="form-select" required>
+                            <option value="">Select Subject</option>
+                            <option value="English">English</option>
+                            <option value="Math">Math</option>
+                            <option value="Science">Science</option>
+                            <option value="PE">PE</option>
+                        </select>
                     </div>
                     <button type="submit" class="btn btn-warning w-100">Update</button>
                 </form>
@@ -160,7 +172,10 @@
                     document.getElementById('editFirstName').value = teacher.firstName;
                     document.getElementById('editLastName').value = teacher.lastName;
                     document.getElementById('editAge').value = teacher.age;
-                    document.getElementById('editSubject').value = teacher.subject;
+                    
+                    // Set the selected subject in dropdown
+                    const subjectSelect = document.getElementById('editSubject');
+                    subjectSelect.value = teacher.subject;
                 })
                 .catch(error => {
                     console.error('Error loading teacher data:', error);

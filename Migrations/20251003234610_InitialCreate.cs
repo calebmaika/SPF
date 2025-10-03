@@ -21,7 +21,7 @@ namespace Alliance_Group_5_Project_Student_Performance_Tracker.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Age = table.Column<int>(type: "int", nullable: false),
-                    Subject = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Subject = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
