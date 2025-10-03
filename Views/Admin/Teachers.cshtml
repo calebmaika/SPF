@@ -4,102 +4,169 @@
     ViewData["Title"] = "Teacher Management";
 }
 
-<div class="container-fluid">
-    <h2 class="mb-4">Teacher Management</h2>
-
-    <!-- Add Teacher Button -->
-    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addTeacherModal">
-        <i class="bi bi-plus-circle"></i> Add Teacher
-    </button>
-
-    <!-- Teacher Table -->
-    <div class="card shadow-sm border-0">
-        <div class="card-body">
-            <table class="table table-hover align-middle">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Username</th>
-                        <th>Full Name</th>
-                        <th>Age</th>
-                        <th>Subject</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var teacher in Model.Teachers)
-                    {
-                        <tr>
-                            <td>@teacher.Username</td>
-                            <td>@teacher.FirstName @teacher.LastName</td>
-                            <td>@teacher.Age</td>
-                            <td>@teacher.Subject</td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <!-- Edit Button -->
-                                    <button type="button" class="btn btn-sm btn-warning me-1" 
-                                            data-bs-toggle="modal" data-bs-target="#editTeacherModal"
-                                            onclick="loadTeacherData(@teacher.Id)">
-                                        <i class="bi bi-pencil"></i> Edit
-                                    </button>
-                                    
-                                    <!-- Delete Button -->
-                                    <form asp-action="DeleteTeacher" asp-route-id="@teacher.Id" method="post" style="display:inline">
-                                        <button type="submit" class="btn btn-sm btn-danger" 
-                                                onclick="return confirm('Are you sure you want to delete this teacher?')">
-                                            <i class="bi bi-trash"></i> Delete
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+<div class="container-fluid px-4 py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Teacher Management</h2>
+            <p class="text-muted mb-0">Manage and organize your teaching staff</p>
         </div>
+        <button class="btn btn-primary d-flex align-items-center gap-2 px-4" data-bs-toggle="modal" data-bs-target="#addTeacherModal">
+            <i class="bi bi-plus-circle"></i>
+            <span>Add Teacher</span>
+        </button>
+    </div>
+
+    <!-- Search and Filter Bar -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0 ps-0" id="searchInput" placeholder="Search by name, username, or subject...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="subjectFilter">
+                        <option value="">All Subjects</option>
+                        <option value="english">English</option>
+                        <option value="math">Math</option>
+                        <option value="science">Science</option>
+                        <option value="pe">PE</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <div class="d-flex align-items-center justify-content-end h-100">
+                        <span class="text-muted">
+                            <i class="bi bi-people-fill me-2"></i>
+                            <span id="teacherCount">@Model.Teachers.Count()</span> Teachers
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teachers Grid -->
+    <div class="row g-4" id="teacherGrid">
+        @foreach (var teacher in Model.Teachers)
+        {
+            <div class="col-xl-3 col-lg-4 col-md-6 teacher-card" 
+                data-username="@teacher.Username.ToLower()" 
+                data-name="@(teacher.FirstName + " " + teacher.LastName).ToLower()" 
+                data-subject="@teacher.Subject.ToString().ToLower()">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start justify-content-between mb-3">
+                            <div class="avatar-circle bg-primary bg-opacity-10 text-primary">
+                                @teacher.FirstName.Substring(0, 1)@teacher.LastName.Substring(0, 1)
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-light border-0" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                    <li>
+                                        <button type="button" class="dropdown-item" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#editTeacherModal"
+                                                onclick="loadTeacherData(@teacher.Id)">
+                                            <i class="bi bi-pencil me-2"></i>Edit
+                                        </button>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-action="DeleteTeacher" asp-route-id="@teacher.Id" method="post" class="delete-form">
+                                            <button type="submit" class="dropdown-item text-danger">
+                                                <i class="bi bi-trash me-2"></i>Delete
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <h5 class="fw-bold mb-1">@teacher.FirstName @teacher.LastName</h5>
+                        <p class="text-muted small mb-3">@@@teacher.Username</p>
+                        
+                        <div class="d-flex flex-column gap-2">
+                            <div class="d-flex align-items-center text-muted small">
+                                <i class="bi bi-book me-2"></i>
+                                <span>@teacher.Subject</span>
+                            </div>
+                            <div class="d-flex align-items-center text-muted small">
+                                <i class="bi bi-calendar-event me-2"></i>
+                                <span>Age @teacher.Age</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Empty State -->
+    <div class="text-center py-5 d-none" id="emptyState">
+        <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
+        <h5 class="text-muted mt-3">No teachers found</h5>
+        <p class="text-muted">Try adjusting your search or filter criteria</p>
     </div>
 </div>
 
 <!-- Add Teacher Modal -->
 <div class="modal fade" id="addTeacherModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add Teacher</h5>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-0 pb-0">
+                <div>
+                    <h5 class="modal-title fw-bold">Add New Teacher</h5>
+                    <p class="text-muted small mb-0">Fill in the teacher's information</p>
+                </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body pt-3">
                 <form asp-action="AddTeacher" method="post">
-                    <div class="mb-3">
-                        <label class="form-label">Username</label>
-                        <input asp-for="NewTeacher.Username" class="form-control" required />
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Username</label>
+                            <input asp-for="NewTeacher.Username" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Password</label>
+                            <input asp-for="NewTeacher.Password" type="password" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">First Name</label>
+                            <input asp-for="NewTeacher.FirstName" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Last Name</label>
+                            <input asp-for="NewTeacher.LastName" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Age</label>
+                            <input asp-for="NewTeacher.Age" type="number" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Subject</label>
+                            <select asp-for="NewTeacher.Subject" class="form-select" required>
+                                <option value="">Select Subject</option>
+                                <option value="English">English</option>
+                                <option value="Math">Math</option>
+                                <option value="Science">Science</option>
+                                <option value="PE">PE</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Password</label>
-                        <input asp-for="NewTeacher.Password" type="password" class="form-control" required />
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="button" class="btn btn-light flex-fill" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary flex-fill">
+                            <i class="bi bi-check-circle me-2"></i>Save Teacher
+                        </button>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">First Name</label>
-                        <input asp-for="NewTeacher.FirstName" class="form-control" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Last Name</label>
-                        <input asp-for="NewTeacher.LastName" class="form-control" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Age</label>
-                        <input asp-for="NewTeacher.Age" type="number" class="form-control" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Subject</label>
-                        <select asp-for="NewTeacher.Subject" class="form-select" required>
-                            <option value="">Select Subject</option>
-                            <option value="English">English</option>
-                            <option value="Math">Math</option>
-                            <option value="Science">Science</option>
-                            <option value="PE">PE</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">Save</button>
                 </form>
             </div>
         </div>
@@ -108,54 +175,168 @@
 
 <!-- Edit Teacher Modal -->
 <div class="modal fade" id="editTeacherModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Teacher</h5>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-0 pb-0">
+                <div>
+                    <h5 class="modal-title fw-bold">Edit Teacher</h5>
+                    <p class="text-muted small mb-0">Update the teacher's information</p>
+                </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body pt-3">
                 <form asp-action="EditTeacher" method="post">
                     <input type="hidden" id="editTeacherId" name="Id" />
-                    <div class="mb-3">
-                        <label class="form-label">Username</label>
-                        <input id="editUsername" name="Username" class="form-control" required />
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Username</label>
+                            <input id="editUsername" name="Username" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Password</label>
+                            <input id="editPassword" name="Password" type="password" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">First Name</label>
+                            <input id="editFirstName" name="FirstName" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Last Name</label>
+                            <input id="editLastName" name="LastName" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Age</label>
+                            <input id="editAge" name="Age" type="number" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Subject</label>
+                            <select id="editSubject" name="Subject" class="form-select" required>
+                                <option value="">Select Subject</option>
+                                <option value="English">English</option>
+                                <option value="Math">Math</option>
+                                <option value="Science">Science</option>
+                                <option value="PE">PE</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Password</label>
-                        <input id="editPassword" name="Password" type="password" class="form-control" required />
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="button" class="btn btn-light flex-fill" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-warning flex-fill">
+                            <i class="bi bi-save me-2"></i>Update Teacher
+                        </button>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">First Name</label>
-                        <input id="editFirstName" name="FirstName" class="form-control" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Last Name</label>
-                        <input id="editLastName" name="LastName" class="form-control" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Age</label>
-                        <input id="editAge" name="Age" type="number" class="form-control" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Subject</label>
-                        <select asp-for="NewTeacher.Subject" class="form-select" required>
-                            <option value="">Select Subject</option>
-                            <option value="English">English</option>
-                            <option value="Math">Math</option>
-                            <option value="Science">Science</option>
-                            <option value="PE">PE</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-warning w-100">Update</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
+<style>
+    .hover-lift {
+        transition: all 0.3s ease;
+    }
+    
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    .avatar-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+    }
+    
+    .input-group-text {
+        background-color: transparent;
+    }
+    
+    .delete-form {
+        margin: 0;
+    }
+    
+    .dropdown-menu {
+        border: none;
+        min-width: 160px;
+    }
+    
+    .dropdown-item {
+        padding: 0.5rem 1rem;
+        transition: all 0.2s ease;
+    }
+    
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+    }
+</style>
+
 @section Scripts {
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const subjectFilter = document.getElementById('subjectFilter');
+            const teacherCards = document.querySelectorAll('.teacher-card');
+            const teacherCount = document.getElementById('teacherCount');
+            const emptyState = document.getElementById('emptyState');
+            const teacherGrid = document.getElementById('teacherGrid');
+            
+            function filterTeachers() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const selectedSubject = subjectFilter.value.toLowerCase();
+                let visibleCount = 0;
+                
+                teacherCards.forEach(card => {
+                    const username = card.dataset.username;
+                    const name = card.dataset.name;
+                    const subject = card.dataset.subject;
+                    
+                    const matchesSearch = username.includes(searchTerm) || 
+                                        name.includes(searchTerm) || 
+                                        subject.includes(searchTerm);
+                    const matchesSubject = selectedSubject === '' || subject === selectedSubject;
+                    
+                    if (matchesSearch && matchesSubject) {
+                        card.classList.remove('d-none');
+                        visibleCount++;
+                    } else {
+                        card.classList.add('d-none');
+                    }
+                });
+                
+                teacherCount.textContent = visibleCount;
+                
+                if (visibleCount === 0) {
+                    teacherGrid.classList.add('d-none');
+                    emptyState.classList.remove('d-none');
+                } else {
+                    teacherGrid.classList.remove('d-none');
+                    emptyState.classList.add('d-none');
+                }
+            }
+            
+            searchInput.addEventListener('input', filterTeachers);
+            subjectFilter.addEventListener('change', filterTeachers);
+            
+            // Confirm delete
+            document.querySelectorAll('.delete-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    if (!confirm('Are you sure you want to delete this teacher?')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        });
+        
         function loadTeacherData(teacherId) {
             fetch(`/Admin/GetTeacher?id=${teacherId}`)
                 .then(response => {
