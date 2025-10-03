@@ -1,0 +1,90 @@
+@model Alliance_Group_5_Project_Student_Performance_Tracker.ViewModels.TeacherViewModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Teacher Management";
+}
+
+<div class="container-fluid">
+    <h2 class="mb-4">Teacher Management</h2>
+
+    <!-- Add Teacher Button -->
+    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addTeacherModal">
+        <i class="bi bi-plus-circle"></i> Add Teacher
+    </button>
+
+    <!-- Teacher Table -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Username</th>
+                        <th>Full Name</th>
+                        <th>Age</th>
+                        <th>Subject</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var teacher in Model.Teachers)
+                    {
+                        <tr>
+                            <td>@teacher.Username</td>
+                            <td>@teacher.FirstName @teacher.LastName</td>
+                            <td>@teacher.Age</td>
+                            <td>@teacher.Subject</td>
+                            <td>
+                                <form asp-action="DeleteTeacher" asp-route-id="@teacher.Id" method="post" style="display:inline">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Teacher Modal -->
+<div class="modal fade" id="addTeacherModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Teacher</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="AddTeacher" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input asp-for="NewTeacher.Username" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input asp-for="NewTeacher.Password" type="password" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">First Name</label>
+                        <input asp-for="NewTeacher.FirstName" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Last Name</label>
+                        <input asp-for="NewTeacher.LastName" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Age</label>
+                        <input asp-for="NewTeacher.Age" type="number" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Subject</label>
+                        <input asp-for="NewTeacher.Subject" class="form-control" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
