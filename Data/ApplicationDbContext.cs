@@ -11,5 +11,7 @@ namespace Alliance_Group_5_Project_Student_Performance_Tracker.Data
         }
 
         public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<Student> Students { get; set; }
+
     }
 }

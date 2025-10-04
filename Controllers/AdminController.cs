@@ -1,3 +1,4 @@
+//dashboard and teacher management
 using Microsoft.AspNetCore.Mvc;
 using Alliance_Group_5_Project_Student_Performance_Tracker.Data;
 using Alliance_Group_5_Project_Student_Performance_Tracker.Models;
@@ -89,5 +90,76 @@ namespace Alliance_Group_5_Project_Student_Performance_Tracker.Controllers
             }
             return RedirectToAction("Teachers");
         }
+
+        // GET: /admin/students
+        public IActionResult Students()
+        {
+            var vm = new StudentViewModel
+            {
+                Students = _context.Students.ToList(),
+                NewStudent = new Student()
+            };
+            return View(vm);
+        }
+
+        // POST: Add Student
+        [HttpPost]
+        public IActionResult AddStudent(StudentViewModel vm)
+        {
+            if (ModelState.IsValid && vm.NewStudent != null)
+            {
+                _context.Students.Add(vm.NewStudent);
+                _context.SaveChanges();
+                return RedirectToAction("Students");
+            }
+
+            // if invalid, reload page with existing students
+            vm.Students = _context.Students.ToList();
+            return View("Students", vm);
+        }
+
+        // GET: Edit Student (for modal)
+        public IActionResult GetStudent(int id)
+        {
+            var student = _context.Students.Find(id);
+            if (student == null)
+            {
+                return NotFound();
+            }
+            return Json(student);
+        }
+
+        // POST: Edit Student
+        [HttpPost]
+        public IActionResult EditStudent(Student student)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Students.Update(student);
+                _context.SaveChanges();
+                return RedirectToAction("Students");
+            }
+
+            var vm = new StudentViewModel
+            {
+                Students = _context.Students.ToList(),
+                NewStudent = student
+            };
+            return View("Students", vm);
+        }
+
+        // POST: Delete Student
+        [HttpPost]
+        public IActionResult DeleteStudent(int id)
+        {
+            var student = _context.Students.Find(id);
+            if (student != null)
+            {
+                _context.Students.Remove(student);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Students");
+        }
     }
 }
+
