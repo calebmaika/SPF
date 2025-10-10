@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Alliance-Group-5-Project-Student-Performance-Tracker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+eab7daef88b9fbd615b585a1356eda104bcc8dc7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ba6e905a132254f9bacc4ef167a12cc889fb8580")]
 [assembly: System.Reflection.AssemblyProductAttribute("Alliance-Group-5-Project-Student-Performance-Tracker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Alliance-Group-5-Project-Student-Performance-Tracker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
