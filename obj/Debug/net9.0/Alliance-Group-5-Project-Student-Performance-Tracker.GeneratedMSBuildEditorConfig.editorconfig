@@ -17,69 +17,69 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Alliance_Group_5_Project_Student_Performance_Tracker
 build_property.RootNamespace = Alliance_Group_5_Project_Student_Performance_Tracker
-build_property.ProjectDir = C:\Users\Administrator\Desktop\Alliance-Group-5-Project-Student-Performance-Tracker\
+build_property.ProjectDir = C:\Users\Administrator\Desktop\SPF\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\Administrator\Desktop\Alliance-Group-5-Project-Student-Performance-Tracker
+build_property.MSBuildProjectDirectory = C:\Users\Administrator\Desktop\SPF
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/Administrator/Desktop/Alliance-Group-5-Project-Student-Performance-Tracker/Views/Account/Login.cshtml]
+[C:/Users/Administrator/Desktop/SPF/Views/Account/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Administrator/Desktop/Alliance-Group-5-Project-Student-Performance-Tracker/Views/Admin/Dashboard.cshtml]
+[C:/Users/Administrator/Desktop/SPF/Views/Admin/Dashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGFzaGJvYXJkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Administrator/Desktop/Alliance-Group-5-Project-Student-Performance-Tracker/Views/Admin/Students.cshtml]
+[C:/Users/Administrator/Desktop/SPF/Views/Admin/Students.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cU3R1ZGVudHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Administrator/Desktop/Alliance-Group-5-Project-Student-Performance-Tracker/Views/Admin/Teachers.cshtml]
+[C:/Users/Administrator/Desktop/SPF/Views/Admin/Teachers.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVGVhY2hlcnMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Administrator/Desktop/Alliance-Group-5-Project-Student-Performance-Tracker/Views/Home/Grades.cshtml]
+[C:/Users/Administrator/Desktop/SPF/Views/Home/Grades.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxHcmFkZXMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Administrator/Desktop/Alliance-Group-5-Project-Student-Performance-Tracker/Views/Home/Index.cshtml]
+[C:/Users/Administrator/Desktop/SPF/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Administrator/Desktop/Alliance-Group-5-Project-Student-Performance-Tracker/Views/Home/Privacy.cshtml]
+[C:/Users/Administrator/Desktop/SPF/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Administrator/Desktop/Alliance-Group-5-Project-Student-Performance-Tracker/Views/Shared/Error.cshtml]
+[C:/Users/Administrator/Desktop/SPF/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Administrator/Desktop/Alliance-Group-5-Project-Student-Performance-Tracker/Views/Shared/_AdminLayout.cshtml]
+[C:/Users/Administrator/Desktop/SPF/Views/Shared/_AdminLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BZG1pbkxheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Administrator/Desktop/Alliance-Group-5-Project-Student-Performance-Tracker/Views/Shared/_AdminLoginLayout.cshtml]
+[C:/Users/Administrator/Desktop/SPF/Views/Shared/_AdminLoginLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BZG1pbkxvZ2luTGF5b3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Administrator/Desktop/Alliance-Group-5-Project-Student-Performance-Tracker/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/Administrator/Desktop/SPF/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Administrator/Desktop/Alliance-Group-5-Project-Student-Performance-Tracker/Views/_ViewImports.cshtml]
+[C:/Users/Administrator/Desktop/SPF/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Administrator/Desktop/Alliance-Group-5-Project-Student-Performance-Tracker/Views/_ViewStart.cshtml]
+[C:/Users/Administrator/Desktop/SPF/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Administrator/Desktop/Alliance-Group-5-Project-Student-Performance-Tracker/Views/Shared/_Layout.cshtml]
+[C:/Users/Administrator/Desktop/SPF/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-joy8ujkw2r

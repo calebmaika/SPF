@@ -4716,11 +4716,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Administrator\\Desktop\\Alliance-Group-5-Project-Student-Performance-Tracker\\Alliance-Group-5-Project-Student-Performance-Tracker.csproj",
+      "projectUniqueName": "C:\\Users\\Administrator\\Desktop\\SPF\\Alliance-Group-5-Project-Student-Performance-Tracker.csproj",
       "projectName": "Alliance-Group-5-Project-Student-Performance-Tracker",
-      "projectPath": "C:\\Users\\Administrator\\Desktop\\Alliance-Group-5-Project-Student-Performance-Tracker\\Alliance-Group-5-Project-Student-Performance-Tracker.csproj",
+      "projectPath": "C:\\Users\\Administrator\\Desktop\\SPF\\Alliance-Group-5-Project-Student-Performance-Tracker.csproj",
       "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Administrator\\Desktop\\Alliance-Group-5-Project-Student-Performance-Tracker\\obj\\",
+      "outputPath": "C:\\Users\\Administrator\\Desktop\\SPF\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
