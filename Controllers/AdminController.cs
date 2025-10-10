@@ -40,7 +40,9 @@ namespace Alliance_Group_5_Project_Student_Performance_Tracker.Controllers
             {
                 _context.Teachers.Add(vm.NewTeacher);
                 _context.SaveChanges();
-                return RedirectToAction("Teachers");
+                
+                string teacherName = $"{vm.NewTeacher.FirstName} {vm.NewTeacher.LastName}";
+                return RedirectToAction("Teachers", new { success = "added", name = teacherName });
             }
 
             // if invalid, reload page with existing teachers
@@ -67,7 +69,9 @@ namespace Alliance_Group_5_Project_Student_Performance_Tracker.Controllers
             {
                 _context.Teachers.Update(teacher);
                 _context.SaveChanges();
-                return RedirectToAction("Teachers");
+                
+                string teacherName = $"{teacher.FirstName} {teacher.LastName}";
+                return RedirectToAction("Teachers", new { success = "updated", name = teacherName });
             }
 
             var vm = new TeacherViewModel
@@ -85,10 +89,14 @@ namespace Alliance_Group_5_Project_Student_Performance_Tracker.Controllers
             var teacher = _context.Teachers.Find(id);
             if (teacher != null)
             {
+                string teacherName = $"{teacher.FirstName} {teacher.LastName}";
                 _context.Teachers.Remove(teacher);
                 _context.SaveChanges();
+                
+                return RedirectToAction("Teachers", new { success = "deleted", name = teacherName });
             }
-            return RedirectToAction("Teachers");
+            
+            return RedirectToAction("Teachers", new { error = "Teacher not found" });
         }
 
         // GET: /admin/students
@@ -110,7 +118,9 @@ namespace Alliance_Group_5_Project_Student_Performance_Tracker.Controllers
             {
                 _context.Students.Add(vm.NewStudent);
                 _context.SaveChanges();
-                return RedirectToAction("Students");
+                
+                string studentName = $"{vm.NewStudent.FirstName} {vm.NewStudent.LastName}";
+                return RedirectToAction("Students", new { success = "added", name = studentName });
             }
 
             // if invalid, reload page with existing students
@@ -137,7 +147,9 @@ namespace Alliance_Group_5_Project_Student_Performance_Tracker.Controllers
             {
                 _context.Students.Update(student);
                 _context.SaveChanges();
-                return RedirectToAction("Students");
+                
+                string studentName = $"{student.FirstName} {student.LastName}";
+                return RedirectToAction("Students", new { success = "updated", name = studentName });
             }
 
             var vm = new StudentViewModel
@@ -155,11 +167,14 @@ namespace Alliance_Group_5_Project_Student_Performance_Tracker.Controllers
             var student = _context.Students.Find(id);
             if (student != null)
             {
+                string studentName = $"{student.FirstName} {student.LastName}";
                 _context.Students.Remove(student);
                 _context.SaveChanges();
+                
+                return RedirectToAction("Students", new { success = "deleted", name = studentName });
             }
-            return RedirectToAction("Students");
+            
+            return RedirectToAction("Students", new { error = "Student not found" });
         }
     }
 }
-

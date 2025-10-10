@@ -8,64 +8,222 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Admin Panel</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.css" />
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
+        :root {
+            --sidebar-width: 260px;
+            --topbar-height: 70px;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --sidebar-bg: #0f172a;
+            --text-muted: #64748b;
         }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        /* Sidebar */
         .sidebar {
-            width: 240px;
+            width: var(--sidebar-width);
             min-height: 100vh;
-            background: #0d6efd;
-            color: white;
+            background: var(--sidebar-bg);
             position: fixed;
             top: 0;
             left: 0;
-            padding-top: 60px;
+            padding: 2rem 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
         }
-        .sidebar a {
+
+        .sidebar-brand {
+            padding: 0 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-brand h4 {
             color: white;
-            display: block;
-            padding: 12px 20px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .sidebar-nav {
+            padding: 0 1rem;
+        }
+
+        .sidebar a {
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1rem;
             text-decoration: none;
+            border-radius: 0.5rem;
+            margin-bottom: 0.25rem;
+            transition: all 0.2s ease;
+            font-size: 0.9375rem;
+            font-weight: 500;
         }
+
+        .sidebar a i {
+            margin-right: 0.875rem;
+            font-size: 1.125rem;
+            width: 20px;
+            text-align: center;
+        }
+
         .sidebar a:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            transform: translateX(2px);
         }
+
+        .sidebar a.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Topbar */
         .topbar {
-            height: 60px;
+            height: var(--topbar-height);
             background: white;
-            border-bottom: 1px solid #ddd;
-            padding: 0 20px;
-            margin-left: 240px;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            margin-left: var(--sidebar-width);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 999;
         }
+
+        .topbar h5 {
+            margin: 0;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .topbar-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: background 0.2s ease;
+            cursor: pointer;
+        }
+
+        .topbar-user:hover {
+            background: #f1f5f9;
+        }
+
+        .topbar-user i {
+            font-size: 1.75rem;
+            color: var(--text-muted);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .user-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Main Content */
         .content {
-            margin-left: 240px;
-            padding: 20px;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            min-height: calc(100vh - var(--topbar-height));
+        }
+
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            :root {
+                --sidebar-width: 0;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .topbar,
+            .content {
+                margin-left: 0;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Sidebar -->
     <div class="sidebar">
-        <h4 class="text-center mb-4">Admin Panel</h4>
-        <a asp-controller="Admin" asp-action="Dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
-        <a asp-controller="Admin" asp-action="Teachers"><i class="bi bi-person-badge"></i> Teachers</a>
-        <a asp-controller="Admin" asp-action="Students"><i class="bi bi-person-badge"></i> Students</a>
-        <a asp-controller="Admin" asp-action="Users"><i class="bi bi-people"></i> Users</a>
-        <a asp-controller="Admin" asp-action="Reports"><i class="bi bi-bar-chart"></i> Reports</a>
-        <a asp-controller="Account" asp-action="Logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
+        <div class="sidebar-brand">
+            <h4>Admin Panel</h4>
+        </div>
+        <nav class="sidebar-nav">
+            <a asp-controller="Admin" asp-action="Dashboard" 
+            class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Dashboard" ? "active" : "")">
+                <i class="bi bi-grid-fill"></i> Dashboard
+            </a>
+            <a asp-controller="Admin" asp-action="Teachers"
+            class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Teachers" ? "active" : "")">
+                <i class="bi bi-person-badge-fill"></i> Teachers
+            </a>
+            <a asp-controller="Admin" asp-action="Students"
+            class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Students" ? "active" : "")">
+                <i class="bi bi-mortarboard-fill"></i> Students
+            </a>
+            <a asp-controller="Admin" asp-action="Users"
+            class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Users" ? "active" : "")">
+                <i class="bi bi-people-fill"></i> Users
+            </a>
+            <a asp-controller="Admin" asp-action="Reports"
+            class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Reports" ? "active" : "")">
+                <i class="bi bi-bar-chart-fill"></i> Reports
+            </a>
+            <a asp-controller="Account" asp-action="Logout" style="margin-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 1.5rem;">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+        </nav>
     </div>
 
     <!-- Topbar -->
     <div class="topbar">
-        <h5 class="m-0">Welcome, Admin</h5>
-        <div>
-            <i class="bi bi-person-circle fs-4"></i>
+        <h5>@ViewData["Title"]</h5>
+        <div class="topbar-user">
+            <div class="user-info">
+                <span class="user-name">Admin User</span>
+                <span class="user-role">Administrator</span>
+            </div>
+            <i class="bi bi-person-circle"></i>
         </div>
     </div>
 
@@ -74,7 +232,7 @@
         @RenderBody()
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
