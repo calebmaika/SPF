@@ -5,7 +5,7 @@ namespace Alliance_Group_5_Project_Student_Performance_Tracker.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
@@ -15,3 +15,4 @@ namespace Alliance_Group_5_Project_Student_Performance_Tracker.Data
 
     }
 }
+
