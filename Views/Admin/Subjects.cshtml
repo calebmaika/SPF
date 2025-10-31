@@ -1,135 +1,594 @@
 @model Alliance_Group_5_Project_Student_Performance_Tracker.ViewModels.SubjectViewModel
 @{
-    ViewData["Title"] = "Subjects Management";
+    ViewData["Title"] = "Subjects";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<div class="page-container">
+    <!-- Success/Error Alerts -->
+    @if (ViewBag.Success != null)
+    {
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>Subject "@ViewBag.Name" has been @ViewBag.Success successfully!</span>
+        </div>
+    }
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>@ViewBag.Error</span>
+        </div>
+    }
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h2 class="page-title">Subject Management</h2>
+            <p class="page-subtitle">Manage and organize your subjects</p>
+        </div>
+        <button class="btn-primary-modern" data-bs-toggle="modal" data-bs-target="#addSubjectModal">
+            <i class="bi bi-plus-circle"></i>
+            <span>Add Subject</span>
+        </button>
+    </div>
+
+    <!-- Search and Filter Bar -->
+    <div class="filter-card">
+        <div class="filter-grid">
+            <div class="search-box">
+                <i class="bi bi-search"></i>
+                <input type="text" id="searchInput" placeholder="Search by subject name or description...">
+            </div>
+            <div class="count-badge">
+                <i class="bi bi-book-fill"></i>
+                <span id="subjectCount">@Model.Subjects.Count()</span> Subjects
+            </div>
+        </div>
+    </div>
+
+    <!-- Subjects Grid -->
+    <div class="cards-grid" id="subjectGrid">
+        @foreach (var subject in Model.Subjects)
+        {
+            <div class="subject-card" 
+                data-name="@subject.SubjectName.ToLower()" 
+                data-description="@(subject.Description?.ToLower() ?? "")">
+                <div class="card-modern">
+                    <div class="card-header-action">
+                        <div class="avatar-modern subject-avatar">
+                            @subject.SubjectName.Substring(0, Math.Min(2, subject.SubjectName.Length)).ToUpper()
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn-icon-modern" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-modern">
+                                <li>
+                                    <button type="button" class="dropdown-item-modern" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#editSubjectModal"
+                                            onclick="loadSubjectData(@subject.SubjectId)">
+                                        <i class="bi bi-pencil-square"></i>
+                                        <span>Edit Details</span>
+                                    </button>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <form asp-action="DeleteSubject" asp-route-id="@subject.SubjectId" method="post" class="delete-form">
+                                        <button type="submit" class="dropdown-item-modern danger">
+                                            <i class="bi bi-trash3"></i>
+                                            <span>Delete</span>
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body-modern">
+                        <h5 class="card-title-modern">@subject.SubjectName</h5>
+                        <p class="card-description">@(subject.Description ?? "No description provided")</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state d-none" id="emptyState">
+        <div class="empty-icon">
+            <i class="bi bi-search"></i>
+        </div>
+        <h5>No subjects found</h5>
+        <p>Try adjusting your search criteria</p>
+    </div>
+</div>
+
+<!-- Add Subject Modal -->
+<div class="modal fade" id="addSubjectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-modern">
+            <div class="modal-header-modern">
+                <div>
+                    <h5 class="modal-title-modern">Add New Subject</h5>
+                    <p class="modal-subtitle">Fill in the subject information</p>
+                </div>
+                <button type="button" class="btn-close-modern" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="modal-body-modern">
+                <form asp-action="AddSubject" method="post">
+                    <div class="form-group-modern">
+                        <label>Subject Name</label>
+                        <input asp-for="NewSubject.SubjectName" class="input-modern" placeholder="e.g. Mathematics" required />
+                    </div>
+                    <div class="form-group-modern">
+                        <label>Description (Optional)</label>
+                        <textarea asp-for="NewSubject.Description" class="textarea-modern" rows="4" placeholder="Brief description of the subject"></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary-modern" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn-primary-modern">
+                            <i class="bi bi-check-circle"></i>
+                            <span>Add Subject</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Subject Modal -->
+<div class="modal fade" id="editSubjectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-modern">
+            <div class="modal-header-modern">
+                <div>
+                    <h5 class="modal-title-modern">Edit Subject</h5>
+                    <p class="modal-subtitle">Update the subject information</p>
+                </div>
+                <button type="button" class="btn-close-modern" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="modal-body-modern">
+                <form asp-action="EditSubject" method="post">
+                    <input type="hidden" id="editSubjectId" name="SubjectId" />
+                    <div class="form-group-modern">
+                        <label>Subject Name</label>
+                        <input id="editSubjectName" name="SubjectName" class="input-modern" required />
+                    </div>
+                    <div class="form-group-modern">
+                        <label>Description (Optional)</label>
+                        <textarea id="editDescription" name="Description" class="textarea-modern" rows="4"></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary-modern" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn-primary-modern">
+                            <i class="bi bi-save"></i>
+                            <span>Update Subject</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
+    .page-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
     .page-header {
-        margin-bottom: 2rem;
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
+        margin-bottom: 2rem;
     }
 
     .page-title {
-        font-size: 1.5rem;
-        font-weight: 600;
+        font-size: 1.75rem;
+        font-weight: 700;
         color: #0f172a;
+        margin: 0 0 0.25rem 0;
+        letter-spacing: -0.5px;
     }
 
-    .btn-primary {
+    .page-subtitle {
+        color: #64748b;
+        margin: 0;
+        font-size: 0.9375rem;
+    }
+
+    /* Modern Buttons */
+    .btn-primary-modern {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
         background: #2563eb;
         color: white;
         border: none;
-        padding: 0.625rem 1.25rem;
         border-radius: 0.5rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background 0.2s ease;
-    }
-
-    .btn-primary:hover {
-        background: #1d4ed8;
-    }
-
-    .table-container {
-        background: white;
-        border-radius: 0.75rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-    }
-
-    .table {
-        margin: 0;
-    }
-
-    .table thead {
-        background: #f8fafc;
-    }
-
-    .table th {
         font-weight: 600;
-        color: #0f172a;
-        padding: 1rem;
-        border-bottom: 1px solid #e2e8f0;
-    }
-
-    .table td {
-        padding: 1rem;
-        vertical-align: middle;
-        border-bottom: 1px solid #f1f5f9;
-    }
-
-    .btn-sm {
-        padding: 0.375rem 0.75rem;
-        font-size: 0.875rem;
-        border-radius: 0.375rem;
-        border: none;
+        font-size: 0.9375rem;
         cursor: pointer;
         transition: all 0.2s ease;
     }
 
-    .btn-info {
-        background: #0ea5e9;
-        color: white;
+    .btn-primary-modern:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
     }
 
-    .btn-info:hover {
-        background: #0284c7;
-    }
-
-    .btn-danger {
-        background: #ef4444;
-        color: white;
-    }
-
-    .btn-danger:hover {
-        background: #dc2626;
-    }
-
-    .modal-content {
-        border-radius: 0.75rem;
+    .btn-secondary-modern {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: #f1f5f9;
+        color: #475569;
         border: none;
-    }
-
-    .modal-header {
-        background: #f8fafc;
-        border-bottom: 1px solid #e2e8f0;
-        padding: 1.25rem 1.5rem;
-    }
-
-    .modal-title {
+        border-radius: 0.5rem;
         font-weight: 600;
+        font-size: 0.9375rem;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-secondary-modern:hover {
+        background: #e2e8f0;
+    }
+
+    .btn-icon-modern {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8fafc;
+        border: none;
+        border-radius: 0.5rem;
+        color: #64748b;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-icon-modern:hover {
+        background: #f1f5f9;
         color: #0f172a;
     }
 
-    .modal-body {
+    /* Filter Card */
+    .filter-card {
+        background: white;
+        border-radius: 0.75rem;
         padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
-    .form-label {
-        font-weight: 500;
-        color: #0f172a;
-        margin-bottom: 0.5rem;
+    .filter-grid {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 1rem;
+        align-items: center;
     }
 
-    .form-control {
+    .search-box {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-box i {
+        position: absolute;
+        left: 1rem;
+        color: #94a3b8;
+        font-size: 1rem;
+    }
+
+    .search-box input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2.75rem;
         border: 1px solid #e2e8f0;
         border-radius: 0.5rem;
-        padding: 0.625rem 0.875rem;
+        font-size: 0.9375rem;
+        transition: all 0.2s ease;
+        background: #f8fafc;
     }
 
-    .form-control:focus {
+    .search-box input:focus {
+        outline: none;
         border-color: #2563eb;
+        background: white;
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
+    .count-badge {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.25rem;
+        background: #f8fafc;
+        border-radius: 0.5rem;
+        color: #64748b;
+        font-size: 0.9375rem;
+        font-weight: 600;
+    }
+
+    .count-badge i {
+        color: #94a3b8;
+    }
+
+    /* Cards Grid */
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .card-modern {
+        background: white;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+        height: 100%;
+    }
+
+    .card-modern:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-header-action {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.25rem;
+    }
+
+    .avatar-modern {
+        width: 56px;
+        height: 56px;
+        border-radius: 0.75rem;
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.25rem;
+        letter-spacing: -0.5px;
+    }
+
+    .subject-avatar {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .card-body-modern {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .card-title-modern {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+        letter-spacing: -0.25px;
+    }
+
+    .card-description {
+        color: #64748b;
+        font-size: 0.875rem;
+        margin: 0;
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* Dropdown */
+    .dropdown-modern {
+        min-width: 180px;
+        background: white;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        border: none;
+        margin-top: 0.5rem;
+    }
+
+    .dropdown-item-modern {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.625rem 0.875rem;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        border-radius: 0.375rem;
+        font-size: 0.9375rem;
+        color: #0f172a;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        font-weight: 500;
+    }
+
+    .dropdown-item-modern:hover {
+        background: #f8fafc;
+    }
+
+    .dropdown-item-modern.danger {
+        color: #dc2626;
+    }
+
+    .dropdown-item-modern.danger:hover {
+        background: #fef2f2;
+    }
+
+    .dropdown-modern .divider {
+        height: 1px;
+        background: #e2e8f0;
+        margin: 0.5rem 0;
+    }
+
+    /* Modal */
+    .modal-modern {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-header-modern {
+        padding: 2rem 2rem 1rem;
+        border: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .modal-title-modern {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+        letter-spacing: -0.5px;
+    }
+
+    .modal-subtitle {
+        color: #64748b;
+        font-size: 0.875rem;
+        margin: 0.25rem 0 0 0;
+    }
+
+    .btn-close-modern {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8fafc;
+        border: none;
+        border-radius: 0.5rem;
+        color: #64748b;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-close-modern:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+    }
+
+    .modal-body-modern {
+        padding: 1rem 2rem 2rem;
+    }
+
+    .form-group-modern {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .form-group-modern label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #334155;
+    }
+
+    .input-modern, .textarea-modern {
+        padding: 0.75rem 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        font-size: 0.9375rem;
+        transition: all 0.2s ease;
+        background: #f8fafc;
+        font-family: inherit;
+    }
+
+    .input-modern:focus, .textarea-modern:focus {
+        outline: none;
+        border-color: #2563eb;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .textarea-modern {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .modal-actions button {
+        flex: 1;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+
+    .empty-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        background: #f8fafc;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .empty-icon i {
+        font-size: 2rem;
+        color: #cbd5e1;
+    }
+
+    .empty-state h5 {
+        color: #475569;
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        color: #94a3b8;
+        font-size: 0.9375rem;
+    }
+
+    .delete-form {
+        margin: 0;
+    }
+
+    /* Alerts */
     .alert {
         border-radius: 0.5rem;
         padding: 1rem 1.25rem;
         margin-bottom: 1.5rem;
         border: none;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
     }
 
     .alert-success {
@@ -144,176 +603,444 @@
         border-left: 4px solid #ef4444;
     }
 
-    .empty-state {
-        text-align: center;
-        padding: 3rem 1rem;
-        color: #64748b;
+    .alert i {
+        font-size: 1.25rem;
     }
 
-    .empty-state i {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        opacity: 0.5;
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .filter-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .cards-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .page-header {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .btn-primary-modern {
+            width: 100%;
+            justify-content: center;
+        }
     }
 </style>
 
-@if (ViewBag.Success != null)
-{
-    <div class="alert alert-success">
-        <i class="bi bi-check-circle-fill"></i>
-        Subject "@ViewBag.Name" has been @ViewBag.Success successfully!
-    </div>
-}
-
-@if (ViewBag.Error != null)
-{
-    <div class="alert alert-danger">
-        <i class="bi bi-exclamation-triangle-fill"></i>
-        @ViewBag.Error
-    </div>
-}
-
-<div class="page-header">
-    <h1 class="page-title">Subjects Management</h1>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSubjectModal">
-        <i class="bi bi-plus-lg"></i> Add Subject
-    </button>
-</div>
-
-<div class="table-container">
-    @if (Model.Subjects.Any())
-    {
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Subject Name</th>
-                    <th>Description</th>
-                    <th style="width: 150px; text-align: center;">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var subject in Model.Subjects)
-                {
-                    <tr>
-                        <td><strong>@subject.SubjectName</strong></td>
-                        <td>@(subject.Description ?? "No description")</td>
-                        <td style="text-align: center;">
-                            <button class="btn btn-info btn-sm" onclick="editSubject(@subject.SubjectId)">
-                                <i class="bi bi-pencil-fill"></i> Edit
-                            </button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteSubject(@subject.SubjectId, '@subject.SubjectName')">
-                                <i class="bi bi-trash-fill"></i> Delete
-                            </button>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <div class="empty-state">
-            <i class="bi bi-book"></i>
-            <p>No subjects found. Click "Add Subject" to create one.</p>
-        </div>
-    }
-</div>
-
-<!-- Add Subject Modal -->
-<div class="modal fade" id="addSubjectModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add New Subject</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form asp-action="AddSubject" method="post">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Subject Name</label>
-                        <input type="text" class="form-control" name="NewSubject.SubjectName" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Description (Optional)</label>
-                        <textarea class="form-control" name="NewSubject.Description" rows="3"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Subject</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Edit Subject Modal -->
-<div class="modal fade" id="editSubjectModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Subject</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form asp-action="EditSubject" method="post">
-                <input type="hidden" id="editSubjectId" name="SubjectId" />
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Subject Name</label>
-                        <input type="text" class="form-control" id="editSubjectName" name="SubjectName" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Description (Optional)</label>
-                        <textarea class="form-control" id="editDescription" name="Description" rows="3"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Update Subject</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Delete Subject</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to delete <strong id="deleteSubjectName"></strong>?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form id="deleteForm" method="post" style="display: inline;">
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 @section Scripts {
     <script>
-        function editSubject(id) {
-            fetch(`/Admin/GetSubject/${id}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('editSubjectId').value = data.subjectId;
-                    document.getElementById('editSubjectName').value = data.subjectName;
-                    document.getElementById('editDescription').value = data.description || '';
-                    new bootstrap.Modal(document.getElementById('editSubjectModal')).show();
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const subjectCards = document.querySelectorAll('.subject-card');
+            const subjectCount = document.getElementById('subjectCount');
+            const emptyState = document.getElementById('emptyState');
+            const subjectGrid = document.getElementById('subjectGrid');
+            
+            function filterSubjects() {
+                const searchTerm = searchInput.value.toLowerCase();
+                let visibleCount = 0;
+                
+                subjectCards.forEach(card => {
+                    const name = card.dataset.name;
+                    const description = card.dataset.description;
+                    
+                    const matchesSearch = name.includes(searchTerm) || description.includes(searchTerm);
+                    
+                    if (matchesSearch) {
+                        card.classList.remove('d-none');
+                        visibleCount++;
+                    } else {
+                        card.classList.add('d-none');
+                    }
+                });
+                
+                subjectCount.textContent = visibleCount;
+                
+                if (visibleCount === 0) {
+                    subjectGrid.classList.add('d-none');
+                    emptyState.classList.remove('d-none');
+                } else {
+                    subjectGrid.classList.remove('d-none');
+                    emptyState.classList.add('d-none');
+                }
+            }
+            
+            searchInput.addEventListener('input', filterSubjects);
+            
+            // Custom Delete Confirmation
+            document.querySelectorAll('.delete-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const subjectName = this.closest('.card-modern').querySelector('.card-title-modern').textContent.trim();
+                    const formToSubmit = this;
+                    
+                    showConfirmModal(
+                        'Delete Subject',
+                        `Are you sure you want to delete <strong>${subjectName}</strong>?`,
+                        'This action cannot be undone and may affect teachers assigned to this subject.',
+                        'Delete',
+                        'Cancel',
+                        function() {
+                            const submitBtn = formToSubmit.querySelector('button[type="submit"]');
+                            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Deleting...';
+                            submitBtn.disabled = true;
+                            formToSubmit.submit();
+                        }
+                    );
+                });
+            });
+            
+            // Add Subject Form Submission
+            const addSubjectForm = document.querySelector('#addSubjectModal form');
+            if (addSubjectForm) {
+                addSubjectForm.addEventListener('submit', function(e) {
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Adding...';
+                    submitBtn.disabled = true;
+                });
+            }
+            
+            // Edit Subject Form Submission
+            const editSubjectForm = document.querySelector('#editSubjectModal form');
+            if (editSubjectForm) {
+                editSubjectForm.addEventListener('submit', function(e) {
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Updating...';
+                    submitBtn.disabled = true;
+                });
+            }
+            
+            // Reset forms when modals close
+            document.getElementById('addSubjectModal').addEventListener('hidden.bs.modal', function () {
+                const form = this.querySelector('form');
+                form.reset();
+                const submitBtn = form.querySelector('button[type="submit"]');
+                submitBtn.innerHTML = '<i class="bi bi-check-circle"></i><span>Add Subject</span>';
+                submitBtn.disabled = false;
+            });
+            
+            document.getElementById('editSubjectModal').addEventListener('hidden.bs.modal', function () {
+                const form = this.querySelector('form');
+                const submitBtn = form.querySelector('button[type="submit"]');
+                submitBtn.innerHTML = '<i class="bi bi-save"></i><span>Update Subject</span>';
+                submitBtn.disabled = false;
+            });
+        });
+        
+        // Load Subject Data for Edit
+        function loadSubjectData(subjectId) {
+            const modal = document.getElementById('editSubjectModal');
+            const modalBody = modal.querySelector('.modal-body-modern');
+            const originalContent = modalBody.innerHTML;
+            
+            modalBody.innerHTML = `
+                <div style="text-align: center; padding: 3rem;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p style="margin-top: 1rem; color: #64748b;">Loading subject data...</p>
+                </div>
+            `;
+            
+            fetch(`/Admin/GetSubject?id=${subjectId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to load subject data');
+                    }
+                    return response.json();
+                })
+                .then(subject => {
+                    modalBody.innerHTML = originalContent;
+                    
+                    document.getElementById('editSubjectId').value = subject.subjectId;
+                    document.getElementById('editSubjectName').value = subject.subjectName;
+                    document.getElementById('editDescription').value = subject.description || '';
+                })
+                .catch(error => {
+                    console.error('Error loading subject data:', error);
+                    modalBody.innerHTML = `
+                        <div style="text-align: center; padding: 3rem;">
+                            <i class="bi bi-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+                            <h5 style="margin-top: 1rem; color: #dc2626;">Failed to Load Data</h5>
+                            <p style="color: #64748b;">Unable to load subject information. Please try again.</p>
+                            <button type="button" class="btn-secondary-modern" data-bs-dismiss="modal" style="margin-top: 1rem;">Close</button>
+                        </div>
+                    `;
+                    showToast('Error loading subject data', 'error');
                 });
         }
-
-        function deleteSubject(id, name) {
-            document.getElementById('deleteSubjectName').textContent = name;
-            document.getElementById('deleteForm').action = `/Admin/DeleteSubject/${id}`;
-            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        
+        // Custom Confirmation Modal (same as Teachers)
+        function showConfirmModal(title, message, description, confirmText, cancelText, onConfirm) {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(4px);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: fadeIn 0.2s ease;
+            `;
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                background: white;
+                border-radius: 1rem;
+                padding: 2rem;
+                max-width: 450px;
+                width: 90%;
+                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+                animation: slideDown 0.3s ease;
+            `;
+            
+            modal.innerHTML = `
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                    <div style="
+                        width: 64px;
+                        height: 64px;
+                        margin: 0 auto 1rem;
+                        background: #fef2f2;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    ">
+                        <i class="bi bi-exclamation-triangle-fill" style="font-size: 2rem; color: #dc2626;"></i>
+                    </div>
+                    <h3 style="
+                        font-size: 1.5rem;
+                        font-weight: 700;
+                        color: #0f172a;
+                        margin: 0 0 0.5rem 0;
+                    ">${title}</h3>
+                    <p style="
+                        color: #0f172a;
+                        font-size: 1rem;
+                        margin: 0 0 0.5rem 0;
+                        line-height: 1.5;
+                    ">${message}</p>
+                    <p style="
+                        color: #64748b;
+                        font-size: 0.875rem;
+                        margin: 0;
+                        line-height: 1.5;
+                    ">${description}</p>
+                </div>
+                <div style="display: flex; gap: 0.75rem;">
+                    <button class="confirm-cancel-btn" style="
+                        flex: 1;
+                        padding: 0.875rem 1.5rem;
+                        background: #f1f5f9;
+                        color: #475569;
+                        border: none;
+                        border-radius: 0.5rem;
+                        font-weight: 600;
+                        font-size: 0.9375rem;
+                        cursor: pointer;
+                        transition: background-color 0.2s ease;
+                    ">${cancelText}</button>
+                    <button class="confirm-delete-btn" style="
+                        flex: 1;
+                        padding: 0.875rem 1.5rem;
+                        background: #dc2626;
+                        color: white;
+                        border: none;
+                        border-radius: 0.5rem;
+                        font-weight: 600;
+                        font-size: 0.9375rem;
+                        cursor: pointer;
+                        transition: background-color 0.2s ease;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 0.5rem;
+                    "><i class="bi bi-trash3"></i> ${confirmText}</button>
+                </div>
+            `;
+            
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+            
+            const cancelBtn = modal.querySelector('.confirm-cancel-btn');
+            const deleteBtn = modal.querySelector('.confirm-delete-btn');
+            
+            cancelBtn.addEventListener('mouseenter', function() {
+                this.style.background = '#e2e8f0';
+            });
+            cancelBtn.addEventListener('mouseleave', function() {
+                this.style.background = '#f1f5f9';
+            });
+            
+            deleteBtn.addEventListener('mouseenter', function() {
+                this.style.background = '#b91c1c';
+                this.style.transform = 'translateY(-1px)';
+                this.style.boxShadow = '0 4px 12px rgba(220, 38, 38, 0.4)';
+            });
+            deleteBtn.addEventListener('mouseleave', function() {
+                this.style.background = '#dc2626';
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'none';
+            });
+            
+            cancelBtn.addEventListener('click', function() {
+                overlay.style.animation = 'fadeOut 0.2s ease';
+                setTimeout(() => overlay.remove(), 200);
+            });
+            
+            deleteBtn.addEventListener('click', function() {
+                overlay.style.animation = 'fadeOut 0.2s ease';
+                setTimeout(() => {
+                    overlay.remove();
+                    if (onConfirm) onConfirm();
+                }, 200);
+            });
+            
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) {
+                    overlay.style.animation = 'fadeOut 0.2s ease';
+                    setTimeout(() => overlay.remove(), 200);
+                }
+            });
+            
+            if (!document.getElementById('confirmModalAnimations')) {
+                const style = document.createElement('style');
+                style.id = 'confirmModalAnimations';
+                style.textContent = `
+                    @@keyframes fadeIn {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+                    @@keyframes fadeOut {
+                        from { opacity: 1; }
+                        to { opacity: 0; }
+                    }
+                    @@keyframes slideDown {
+                        from {
+                            transform: translateY(-50px);
+                            opacity: 0;
+                        }
+                        to {
+                            transform: translateY(0);
+                            opacity: 1;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+        
+        // Toast Notification Function
+        function showToast(message, type = 'info') {
+            const toastContainer = getOrCreateToastContainer();
+            
+            const iconMap = {
+                success: 'bi-check-circle-fill',
+                error: 'bi-x-circle-fill',
+                warning: 'bi-exclamation-triangle-fill',
+                info: 'bi-info-circle-fill'
+            };
+            
+            const colorMap = {
+                success: '#10b981',
+                error: '#ef4444',
+                warning: '#f59e0b',
+                info: '#3b82f6'
+            };
+            
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                background: white;
+                border-left: 4px solid ${colorMap[type]};
+                border-radius: 0.5rem;
+                padding: 1rem 1.25rem;
+                margin-bottom: 0.75rem;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                min-width: 320px;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            toast.innerHTML = `
+                <i class="bi ${iconMap[type]}" style="font-size: 1.25rem; color: ${colorMap[type]};"></i>
+                <span style="flex: 1; color: #0f172a; font-weight: 500; font-size: 0.9375rem;">${message}</span>
+                <button onclick="this.parentElement.remove()" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 1.25rem; padding: 0; line-height: 1;">
+                    <i class="bi bi-x"></i>
+                </button>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+        
+        function getOrCreateToastContainer() {
+            let container = document.getElementById('toastContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toastContainer';
+                container.style.cssText = `
+                    position: fixed;
+                    top: 5rem;
+                    right: 2rem;
+                    z-index: 9999;
+                `;
+                document.body.appendChild(container);
+                
+                const style = document.createElement('style');
+                style.textContent = `
+                    @@keyframes slideIn {
+                        from {
+                            transform: translateX(400px);
+                            opacity: 0;
+                        }
+                        to {
+                            transform: translateX(0);
+                            opacity: 1;
+                        }
+                    }
+                    @@keyframes slideOut {
+                        from {
+                            transform: translateX(0);
+                            opacity: 1;
+                        }
+                        to {
+                            transform: translateX(400px);
+                            opacity: 0;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            return container;
+        }
+        
+        // Check URL parameters for success messages
+        const urlParams = new URLSearchParams(window.location.search);
+        const successType = urlParams.get('success');
+        const subjectName = urlParams.get('name');
+        
+        if (successType === 'added' && subjectName) {
+            showToast(`Subject ${decodeURIComponent(subjectName)} added successfully!`, 'success');
+        } else if (successType === 'updated' && subjectName) {
+            showToast(`Subject ${decodeURIComponent(subjectName)} updated successfully!`, 'success');
+        } else if (successType === 'deleted' && subjectName) {
+            showToast(`Subject ${decodeURIComponent(subjectName)} deleted successfully!`, 'success');
+        } else if (urlParams.get('error')) {
+            showToast(decodeURIComponent(urlParams.get('error')), 'error');
         }
     </script>
 }

@@ -26,10 +26,10 @@
             </div>
             <select class="select-modern" id="subjectFilter">
                 <option value="">All Subjects</option>
-                <option value="english">English</option>
-                <option value="math">Math</option>
-                <option value="science">Science</option>
-                <option value="pe">PE</option>
+                @foreach(var subject in ViewBag.Subjects ?? new List<Alliance_Group_5_Project_Student_Performance_Tracker.Models.Subject>())
+                {
+                    <option value="@subject.SubjectName.ToLower()">@subject.SubjectName</option>
+                }
             </select>
             <div class="count-badge">
                 <i class="bi bi-people-fill"></i>
@@ -45,7 +45,7 @@
             <div class="teacher-card" 
                 data-username="@teacher.Username.ToLower()" 
                 data-name="@((teacher.FirstName + " " + teacher.LastName).ToLower())" 
-                data-subject="@teacher.Subject.ToString().ToLower()">
+                data-subject="@(teacher.Subject?.SubjectName?.ToLower() ?? "")">
                 <div class="card-modern">
                     <div class="card-header-action">
                         <div class="avatar-modern">
@@ -85,7 +85,7 @@
                         <div class="info-list">
                             <div class="info-item">
                                 <i class="bi bi-book"></i>
-                                <span>@teacher.Subject</span>
+                                <span>@(teacher.Subject?.SubjectName ?? "No subject assigned")</span>
                             </div>
                             <div class="info-item">
                                 <i class="bi bi-calendar-event"></i>
@@ -146,12 +146,12 @@
                         </div>
                         <div class="form-group-modern">
                             <label>Subject</label>
-                            <select asp-for="NewTeacher.Subject" class="select-modern" required>
+                            <select asp-for="NewTeacher.SubjectId" class="select-modern" required>
                                 <option value="">Select Subject</option>
-                                <option value="English">English</option>
-                                <option value="Math">Math</option>
-                                <option value="Science">Science</option>
-                                <option value="PE">PE</option>
+                                @foreach(var subject in ViewBag.Subjects ?? new List<Alliance_Group_5_Project_Student_Performance_Tracker.Models.Subject>())
+                                {
+                                    <option value="@subject.SubjectId">@subject.SubjectName</option>
+                                }
                             </select>
                         </div>
                     </div>
@@ -207,12 +207,12 @@
                         </div>
                         <div class="form-group-modern">
                             <label>Subject</label>
-                            <select id="editSubject" name="Subject" class="select-modern" required>
+                            <select id="editSubject" name="SubjectId" class="select-modern" required>
                                 <option value="">Select Subject</option>
-                                <option value="English">English</option>
-                                <option value="Math">Math</option>
-                                <option value="Science">Science</option>
-                                <option value="PE">PE</option>
+                                @foreach(var subject in ViewBag.Subjects ?? new List<Alliance_Group_5_Project_Student_Performance_Tracker.Models.Subject>())
+                                {
+                                    <option value="@subject.SubjectId">@subject.SubjectName</option>
+                                }
                             </select>
                         </div>
                     </div>
@@ -269,7 +269,7 @@
         font-weight: 600;
         font-size: 0.9375rem;
         cursor: pointer;
-        transition: background-color 0.2s ease;
+        transition: all 0.2s ease;
     }
 
     .btn-primary-modern:hover {
@@ -351,12 +351,14 @@
         border: 1px solid #e2e8f0;
         border-radius: 0.5rem;
         font-size: 0.9375rem;
-        transition: background-color 0.2s ease;
+        transition: all 0.2s ease;
+        background: #f8fafc;
     }
 
     .search-box input:focus {
         outline: none;
         border-color: #2563eb;
+        background: white;
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
@@ -366,15 +368,16 @@
         border-radius: 0.5rem;
         font-size: 0.9375rem;
         color: #0f172a;
-        background: white;
+        background: #f8fafc;
         cursor: pointer;
-        transition: background-color 0.2s ease;
+        transition: all 0.2s ease;
         min-width: 160px;
     }
 
     .select-modern:focus {
         outline: none;
         border-color: #2563eb;
+        background: white;
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
@@ -406,7 +409,7 @@
         border-radius: 0.75rem;
         padding: 1.5rem;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.2s ease;
+        transition: all 0.2s ease;
         height: 100%;
     }
 
@@ -599,12 +602,14 @@
         border: 1px solid #e2e8f0;
         border-radius: 0.5rem;
         font-size: 0.9375rem;
-        transition: background-color 0.2s ease;
+        transition: all 0.2s ease;
+        background: #f8fafc;
     }
 
     .input-modern:focus {
         outline: none;
         border-color: #2563eb;
+        background: white;
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
@@ -821,7 +826,7 @@
                     document.getElementById('editFirstName').value = teacher.firstName;
                     document.getElementById('editLastName').value = teacher.lastName;
                     document.getElementById('editAge').value = teacher.age;
-                    document.getElementById('editSubject').value = teacher.subject;
+                    document.getElementById('editSubject').value = teacher.subjectId || '';
                 })
                 .catch(error => {
                     console.error('Error loading teacher data:', error);

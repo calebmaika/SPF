@@ -1,5 +1,6 @@
 //dashboard and teacher management
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore; 
 using Alliance_Group_5_Project_Student_Performance_Tracker.Data;
 using Alliance_Group_5_Project_Student_Performance_Tracker.Models;
 using Alliance_Group_5_Project_Student_Performance_Tracker.ViewModels;
@@ -26,9 +27,10 @@ namespace Alliance_Group_5_Project_Student_Performance_Tracker.Controllers
         {
             var vm = new TeacherViewModel
             {
-                Teachers = _context.Teachers.ToList(),
+                Teachers = _context.Teachers.Include(t => t.Subject).ToList(), // Include Subject
                 NewTeacher = new Teacher()
             };
+            ViewBag.Subjects = _context.Subjects.ToList(); // Pass subjects for dropdown
             return View(vm);
         }
 
@@ -46,7 +48,8 @@ namespace Alliance_Group_5_Project_Student_Performance_Tracker.Controllers
             }
 
             // if invalid, reload page with existing teachers
-            vm.Teachers = _context.Teachers.ToList();
+            vm.Teachers = _context.Teachers.Include(t => t.Subject).ToList();
+            ViewBag.Subjects = _context.Subjects.ToList();
             return View("Teachers", vm);
         }
 
@@ -76,9 +79,10 @@ namespace Alliance_Group_5_Project_Student_Performance_Tracker.Controllers
 
             var vm = new TeacherViewModel
             {
-                Teachers = _context.Teachers.ToList(),
+                Teachers = _context.Teachers.Include(t => t.Subject).ToList(),
                 NewTeacher = teacher
             };
+            ViewBag.Subjects = _context.Subjects.ToList();
             return View("Teachers", vm);
         }
 
