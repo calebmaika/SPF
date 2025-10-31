@@ -170,11 +170,86 @@ namespace Alliance_Group_5_Project_Student_Performance_Tracker.Controllers
                 string studentName = $"{student.FirstName} {student.LastName}";
                 _context.Students.Remove(student);
                 _context.SaveChanges();
-                
+
                 return RedirectToAction("Students", new { success = "deleted", name = studentName });
             }
-            
+
             return RedirectToAction("Students", new { error = "Student not found" });
+        }
+        
+        // GET: /admin/subjects
+        public IActionResult Subjects()
+        {
+            var vm = new SubjectViewModel
+            {
+                Subjects = _context.Subjects.ToList(),
+                NewSubject = new Subject()
+            };
+            return View(vm);
+        }
+
+        // POST: Add Subject
+        [HttpPost]
+        public IActionResult AddSubject(SubjectViewModel vm)
+        {
+            if (ModelState.IsValid && vm.NewSubject != null)
+            {
+                _context.Subjects.Add(vm.NewSubject);
+                _context.SaveChanges();
+                
+                return RedirectToAction("Subjects", new { success = "added", name = vm.NewSubject.SubjectName });
+            }
+
+            vm.Subjects = _context.Subjects.ToList();
+            return View("Subjects", vm);
+        }
+
+        // GET: Edit Subject (for modal)
+        public IActionResult GetSubject(int id)
+        {
+            var subject = _context.Subjects.Find(id);
+            if (subject == null)
+            {
+                return NotFound();
+            }
+            return Json(subject);
+        }
+
+        // POST: Edit Subject
+        [HttpPost]
+        public IActionResult EditSubject(Subject subject)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Subjects.Update(subject);
+                _context.SaveChanges();
+                
+                return RedirectToAction("Subjects", new { success = "updated", name = subject.SubjectName });
+            }
+
+            var vm = new SubjectViewModel
+            {
+                Subjects = _context.Subjects.ToList(),
+                NewSubject = subject
+            };
+            return View("Subjects", vm);
+        }
+
+        // POST: Delete Subject
+        [HttpPost]
+        public IActionResult DeleteSubject(int id)
+        {
+            var subject = _context.Subjects.Find(id);
+            if (subject != null)
+            {
+                string subjectName = subject.SubjectName;
+                _context.Subjects.Remove(subject);
+                _context.SaveChanges();
+                
+                return RedirectToAction("Subjects", new { success = "deleted", name = subjectName });
+            }
+            
+            return RedirectToAction("Subjects", new { error = "Subject not found" });
         }
     }
 }
